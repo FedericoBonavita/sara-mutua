@@ -577,10 +577,7 @@ async function sendMsg() {
     updateSidebar();
   } catch(e) {
     typingEl.remove();
-    const errMsg = e.message?.includes('401') || e.message?.includes('auth')
-      ? 'La API key no es válida. Recarga la página y prueba con otra.'
-      : 'Vaya, ha habido un problema de conexión. 😕 Prueba de nuevo o llama al **900 555 555**.';
-    addAI(errMsg);
+    addAI('Error técnico: ' + e.message);
   }
   state.loading = false;
   document.getElementById('sbtn').disabled = false;
@@ -597,9 +594,10 @@ async function callAPI(history) {
     },
     body: JSON.stringify({ model:'claude-3-5-sonnet-20241022', max_tokens:800, system:SYSTEM, messages:history })
   });
-  if (!res.ok) { const b = await res.text(); throw new Error('HTTP ' + res.status + ': ' + b.slice(0,200)); }
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
+  const b = await res.text();
+  if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + b.slice(0,300));
+  const data = JSON.parse(b);
+  if (data.error) throw new Error(data.error.type + ': ' + data.error.message);
   return data.content[0].text;
 }
 
