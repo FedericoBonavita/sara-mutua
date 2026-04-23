@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sara · Asesora de Salud · Mutua Madrileña</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+:root {
+  --bd:#1A3A6B; --bm:#1E6BB8; --bp:#D6E9F8; --bx:#EEF6FC;
+  --mg:#C8006E; --md:#A3005A; --mp:#F9E6F2;
+  --g7:#333; --g5:#666; --g3:#BBB; --g2:#E8E8E8; --g1:#F4F6F8; --g0:#FAFBFC; --w:#FFF;
+  --font:'Open Sans',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--g1);color:var(--g7);font-size:14px}
+.app{display:flex;flex-direction:column;height:100vh}
+/* TOPBAR */
+.topbar{background:var(--bd);height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+.topbar span{font-size:11px;color:rgba(255,255,255,.75);cursor:pointer;margin-right:16px}
+/* HEADER */
+.header{background:var(--w);border-bottom:1px solid #D8E4EE;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.mm-box{width:36px;height:36px;background:var(--bm);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--w);font-weight:800;font-style:italic;font-size:13px;letter-spacing:-1px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-t1{font-size:16px;font-weight:800;color:var(--bm);text-transform:uppercase;letter-spacing:.5px}
+.logo-t2{font-size:9px;font-weight:600;color:var(--bd);text-transform:uppercase;letter-spacing:2px}
+.hcenter{display:flex;align-items:center;gap:9px;background:var(--bx);border:1px solid var(--bp);border-radius:8px;padding:7px 14px}
+.hcenter-l{font-size:13px;font-weight:700;color:var(--bd)}
+.hcenter-s{font-size:11px;color:var(--g5);margin-top:1px}
+.status-pill{display:flex;align-items:center;gap:6px;background:var(--mp);color:var(--md);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.dot{width:7px;height:7px;background:var(--mg);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.4)}}
+/* MAIN */
+.main{display:grid;grid-template-columns:252px 1fr 248px;flex:1;overflow:hidden}
+/* SIDEBAR */
+.sidebar{background:var(--w);border-right:1px solid #D8E4EE;display:flex;flex-direction:column;overflow-y:auto}
+.sb-head{background:linear-gradient(135deg,var(--bd),var(--bm));padding:16px 16px 20px;flex-shrink:0}
+.sb-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:10px}
+.ucard{display:flex;align-items:center;gap:10px}
+.uav{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--w);flex-shrink:0}
+.unm{font-size:14px;font-weight:700;color:var(--w)}
+.ust{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.utags{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.utag{font-size:11px;padding:3px 8px;border-radius:9px;background:rgba(255,255,255,.15);color:var(--w);border:1px solid rgba(255,255,255,.2);font-weight:500}
+.sb-sec{padding:14px 15px;border-bottom:1px solid var(--g1)}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g3);margin-bottom:11px}
+.step{display:flex;align-items:center;gap:9px;padding:5px 4px;border-radius:6px;font-size:12px;margin-bottom:2px}
+.step.active{background:var(--bx);color:var(--bd);font-weight:700}
+.step.done{color:var(--g3)}
+.step.pending{color:var(--g3)}
+.sdot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.step.done .sdot{background:#E8EFF5;color:var(--g3)}
+.step.active .sdot{background:var(--bm);color:var(--w)}
+.step.pending .sdot{background:var(--g1);color:var(--g3);border:1px solid #DDD}
+.drow{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid var(--g1)}
+.drow:last-child{border-bottom:none}
+.dk{color:var(--g3)}.dv{font-weight:700;color:var(--bd)}
+/* CHAT */
+.chat{display:flex;flex-direction:column;background:var(--g0);overflow:hidden}
+.chat-top{background:linear-gradient(to right,#f0f7ff,var(--w));border-bottom:1px solid #D8E4EE;padding:11px 22px;display:flex;align-items:center;gap:13px;flex-shrink:0}
+.sara-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--bd),var(--bm));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--w);flex-shrink:0;box-shadow:0 3px 12px rgba(30,107,184,.3);border:2px solid var(--w)}
+.chat-al{font-size:14px;font-weight:700;color:var(--bd)}
+.chat-as{font-size:11px;color:var(--g3);margin-top:1px}
+.online-badge{margin-left:auto;font-size:11px;color:var(--bm);font-weight:600;background:var(--bx);padding:4px 10px;border-radius:12px}
+.msgs{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.dsep{text-align:center;font-size:11px;color:var(--g3);font-weight:600;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
+.dsep::before,.dsep::after{content:'';flex:1;height:1px;background:#E2EBF2}
+.msg{display:flex;gap:9px;animation:fadeUp .3s ease forwards;opacity:0}
+.msg.user{flex-direction:row-reverse}
+@keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.mav{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.msg.ai .mav{background:linear-gradient(135deg,var(--bd),var(--bm));color:var(--w)}
+.msg.user .mav{background:var(--bp);color:var(--bd);font-size:11px}
+.mcol{display:flex;flex-direction:column;max-width:70%}
+.msg.user .mcol{align-items:flex-end}
+.mb{padding:11px 14px;font-size:13.5px;line-height:1.65}
+.msg.ai .mb{background:var(--w);color:var(--g7);border:1px solid #D8E4EE;border-left:3px solid var(--bp);border-radius:4px 14px 14px 14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.msg.user .mb{background:linear-gradient(135deg,var(--bm),#2478C5);color:var(--w);border-radius:14px 4px 14px 14px}
+.mt{font-size:10px;color:var(--g3);margin-top:4px;padding:0 2px}
+.typing-dots{display:flex;gap:4px;align-items:center;height:20px}
+.td{width:7px;height:7px;border-radius:50%;background:var(--bm);animation:bounce 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* INPUT */
+.inp-wrap{padding:11px 22px 14px;background:var(--w);border-top:1px solid #D8E4EE;flex-shrink:0}
+.inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--g1);border:1.5px solid #D8E4EE;border-radius:12px;padding:8px 11px;transition:all .2s}
+.inp-row:focus-within{border-color:var(--bm);background:var(--w);box-shadow:0 0 0 3px rgba(30,107,184,.1)}
+#inp{flex:1;border:none;outline:none;font-family:var(--font);font-size:13.5px;color:var(--g7);background:transparent;resize:none;line-height:1.5;min-height:21px;max-height:90px}
+#inp::placeholder{color:var(--g3)}
+.sbtn{width:34px;height:34px;background:var(--mg);border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s}
+.sbtn:hover{background:var(--md)}.sbtn:disabled{background:var(--g3);cursor:default}
+.inp-hint{font-size:10px;color:var(--g3);text-align:center;margin-top:6px}
+/* RIGHT PANEL */
+.rpanel{background:var(--w);border-left:1px solid #D8E4EE;display:flex;flex-direction:column;overflow-y:auto}
+.rp-sec{padding:14px 14px;border-bottom:1px solid var(--g1)}
+.rp-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g3);margin-bottom:11px}
+.score-box{display:flex;align-items:center;gap:12px;background:var(--bx);border-radius:10px;padding:12px}
+.sring{position:relative;width:60px;height:60px;flex-shrink:0}
+.sring svg{transform:rotate(-90deg)}
+.snum{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:800;color:var(--bd)}
+.stxt h4{font-size:12px;font-weight:700;color:var(--bd)}
+.stxt p{font-size:11px;color:var(--g3);line-height:1.4;margin-top:2px}
+.pcard{border:1.5px solid #D8E4EE;border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .18s;position:relative;background:var(--w)}
+.pcard:hover{border-color:var(--bm);box-shadow:0 2px 10px rgba(30,107,184,.1)}
+.pcard.sel{border-color:var(--bm);box-shadow:0 2px 12px rgba(30,107,184,.12);background:var(--bx)}
+.pcard.hidden{display:none}
+.pbadge{position:absolute;top:-1px;right:-1px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:0 8px 0 8px}
+.brec{background:var(--mg);color:var(--w)}.bpop{background:var(--bp);color:var(--bd)}
+.pname{font-size:12px;font-weight:700;color:var(--bd);margin-bottom:3px;padding-right:52px}
+.pprice{font-size:17px;font-weight:800;color:var(--mg);margin-bottom:6px}
+.pprice small{font-size:10px;color:var(--g3);font-weight:400}
+.pfeat{font-size:11px;color:var(--g5);display:flex;align-items:flex-start;gap:5px;margin-bottom:3px}
+.pfeat::before{content:'✓';color:var(--bm);font-weight:700;font-size:12px;flex-shrink:0}
+.pcard-cta{margin-top:8px;width:100%;background:var(--mg);color:var(--w);border:none;padding:7px;border-radius:20px;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.4px;display:none}
+.pcard.sel .pcard-cta{display:block}
+.cta-main{width:100%;background:var(--mg);color:var(--w);border:none;padding:12px;border-radius:22px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;display:none}
+.cta-main.show{display:block}
+.cta-main:hover{background:var(--md)}
+.cta-sec{width:100%;background:transparent;color:var(--bm);border:1.5px solid var(--bm);padding:9px;border-radius:22px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;margin-top:7px;text-transform:uppercase;letter-spacing:.4px}
+.cta-sec:hover{background:var(--bx)}
+.placeholder-txt{font-size:12px;color:var(--g3);text-align:center;line-height:1.6;padding:10px 4px}
+.disclaimer{font-size:10px;color:var(--g3);line-height:1.5;padding:10px 14px;text-align:center}
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,58,107,.55);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--w);border-radius:16px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-head{background:linear-gradient(135deg,var(--bd),var(--bm));padding:20px 24px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{font-size:17px;font-weight:800;color:var(--w)}
+.modal-head p{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px}
+.modal-close{background:none;border:none;color:var(--w);font-size:22px;cursor:pointer;opacity:.7;line-height:1}
+.modal-body{padding:22px 24px}
+.msteps{display:flex;margin-bottom:18px}
+.mstep{flex:1;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:7px 4px;border-bottom:3px solid #E2EBF2;color:var(--g3);transition:all .2s}
+.mstep.active{border-bottom-color:var(--bm);color:var(--bd)}
+.mstep.done{border-bottom-color:var(--mg);color:var(--mg)}
+.fpage{display:none}.fpage.active{display:block}
+.sec-title{font-size:12px;font-weight:700;color:var(--bd);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--g2)}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fg label{font-size:11px;font-weight:600;color:var(--g5)}
+.fg input,.fg select{border:1.5px solid var(--g2);border-radius:7px;padding:8px 10px;font-family:var(--font);font-size:13px;color:var(--g7);outline:none;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--bm);box-shadow:0 0 0 3px rgba(30,107,184,.1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.as-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}
+.add-btn{background:none;border:1.5px dashed var(--bm);color:var(--bm);padding:8px;border-radius:7px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-bottom:8px}
+.rem-btn{background:none;border:none;color:var(--g3);font-size:18px;cursor:pointer;padding:4px 0;align-self:flex-end}
+.rem-btn:hover{color:#E53}
+.price-summary{background:var(--g0);border:1px solid var(--g2);border-radius:10px;padding:13px;margin-bottom:14px}
+.ps-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0}
+.ps-k{color:var(--g5)}.ps-v{font-weight:600;color:var(--g7)}
+.ps-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:var(--bd);border-top:1px solid var(--g2);margin-top:8px;padding-top:10px}
+.ps-price{color:var(--mg);font-size:20px}
+.modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.back-btn{background:none;border:none;color:var(--g3);font-size:12px;cursor:pointer;font-family:var(--font)}
+.back-btn:hover{color:var(--g7)}
+.submit-btn{width:100%;background:var(--mg);color:var(--w);border:none;padding:13px;border-radius:22px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+.submit-btn:hover{background:var(--md)}
+.next-btn{background:var(--mg);color:var(--w);border:none;padding:11px 24px;border-radius:22px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+.next-btn:hover{background:var(--md)}
+.alert-box{background:#FFF3CD;border:1px solid #FFD47A;border-radius:8px;padding:10px 12px;font-size:12px;color:#856404;margin-bottom:10px;display:none}
+.poliza-badge{background:var(--bx);border-left:4px solid var(--bm);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:16px}
+.poliza-badge .pb-name{font-size:14px;font-weight:700;color:var(--bd)}
+.poliza-badge .pb-price{font-size:20px;font-weight:800;color:var(--mg);margin-top:2px}
+.poliza-badge .pb-sub{font-size:11px;color:var(--g5);margin-top:2px}
+.success{text-align:center;padding:20px 0;display:none}
+.success-icon{font-size:52px;margin-bottom:14px}
+.success h3{font-size:19px;font-weight:800;color:var(--bd);margin-bottom:8px}
+.success p{font-size:14px;color:var(--g5);line-height:1.6}
+.success-ref{font-size:12px;background:var(--bx);border-radius:8px;padding:10px 16px;margin:14px 0;color:var(--bd);font-weight:600}
+/* API KEY OVERLAY */
+.api-overlay{display:none;position:fixed;inset:0;background:rgba(26,58,107,.7);z-index:300;align-items:center;justify-content:center}
+.api-overlay.open{display:flex}
+.api-box{background:var(--w);border-radius:16px;padding:32px;width:440px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+.api-box .logo-wrap{justify-content:center;margin-bottom:20px}
+.api-box h2{font-size:20px;font-weight:800;color:var(--bd);margin-bottom:8px}
+.api-box p{font-size:13px;color:var(--g5);line-height:1.6;margin-bottom:20px}
+.api-input-wrap{position:relative;margin-bottom:8px}
+.api-input-wrap input{width:100%;border:2px solid var(--bp);border-radius:10px;padding:12px 14px;font-family:var(--font);font-size:14px;color:var(--g7);outline:none;transition:border-color .2s}
+.api-input-wrap input:focus{border-color:var(--bm)}
+.api-connect-btn{width:100%;background:var(--mg);color:var(--w);border:none;padding:13px;border-radius:22px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
+.api-connect-btn:hover{background:var(--md)}
+.api-note{font-size:11px;color:var(--g3);margin-top:10px;line-height:1.5}
+.api-err{font-size:12px;color:#B71C1C;background:#FFEBEE;border-radius:6px;padding:8px;margin-top:8px;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div><span>Web Corporativa</span><span>Fundación Mutua Madrileña</span></div>
+    <div><span>Profesionales</span><span>Contacto</span><span>💬 WhatsApp</span><span>🔍 Buscar</span></div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="mm-box">MM</div>
+      <div><div class="logo-t1">Mutua</div><div class="logo-t2">Madrileña</div></div>
+    </div>
+    <div class="hcenter">
+      <span style="font-size:17px">🩺</span>
+      <div>
+        <div class="hcenter-l">Sara · Asesora de Seguros de Salud</div>
+        <div class="hcenter-s">Mutua Madrileña · Productos Adeslas · Asesoramiento gratuito</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="status-pill"><div class="dot"></div>Sara activa</div>
+      <span style="font-size:13px;color:var(--bm);font-weight:600">📞 900 555 555</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-head">
+        <div class="sb-tag">Tu conversación con Sara</div>
+        <div class="ucard">
+          <div class="uav" id="uav">?</div>
+          <div>
+            <div class="unm" id="unm">Nuevo usuario</div>
+            <div class="ust">Sesión en curso</div>
+          </div>
+        </div>
+        <div class="utags" id="utags"></div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Proceso</div>
+        <div id="steps-list"></div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Datos recogidos</div>
+        <div id="data-rows"><div class="drow"><span class="dk">Estado</span><span class="dv">En progreso</span></div></div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat">
+      <div class="chat-top">
+        <div class="sara-av">S</div>
+        <div style="flex:1">
+          <div class="chat-al">Sara · Asesora de Salud</div>
+          <div class="chat-as">Mutua Madrileña · Asesoramiento personalizado sin compromiso</div>
+        </div>
+        <div class="online-badge">💬 En línea</div>
+      </div>
+
+      <div class="msgs" id="msgs">
+        <div class="dsep" id="dsep">Hoy · <span id="start-time"></span></div>
+      </div>
+
+      <div class="inp-wrap">
+        <div class="inp-row">
+          <textarea id="inp" rows="1" placeholder="Escríbele a Sara…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="sbtn" id="sbtn" onclick="sendMsg()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+        <div class="inp-hint">Sara usa IA para personalizar tu asesoramiento · Sin almacenamiento de datos · Precios orientativos</div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="rpanel">
+      <div class="rp-sec">
+        <div class="rp-lbl">Completitud del perfil</div>
+        <div class="score-box">
+          <div class="sring">
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <circle cx="30" cy="30" r="25" fill="none" stroke="#D6E9F8" stroke-width="7"/>
+              <circle id="score-ring" cx="30" cy="30" r="25" fill="none" stroke="#1E6BB8" stroke-width="7"
+                stroke-dasharray="157" stroke-dashoffset="157" stroke-linecap="butt"
+                style="transition:stroke-dashoffset 1s ease"/>
+            </svg>
+            <div class="snum" id="score-num">0%</div>
+          </div>
+          <div class="stxt">
+            <h4 id="score-label">Empezando</h4>
+            <p id="score-desc">Cuéntale a Sara tu situación para personalizar la recomendación.</p>
+          </div>
+        </div>
+      </div>
+      <div class="rp-sec" style="flex:1">
+        <div class="rp-lbl">Productos Adeslas MM</div>
+        <p class="placeholder-txt" id="prod-ph">Cuando Sara tenga suficiente información, aquí aparecerán las opciones que mejor encajan contigo.</p>
+
+        <div class="pcard hidden" id="prod-basico">
+          <div class="pname">Adeslas Básico Familia MM</div>
+          <div class="pprice">16,48 € <small>/ pers. mes</small></div>
+          <div class="pfeat">Solo cobertura ambulatoria</div>
+          <div class="pfeat">Medicina general y pediatría</div>
+          <div class="pfeat">Sin hospitalización ni urgencias</div>
+          <button class="pcard-cta" onclick="openModal('basico')">Calcular mi precio →</button>
+        </div>
+        <div class="pcard hidden" id="prod-plena-vital">
+          <div class="pbadge bpop">Copago alto</div>
+          <div class="pname">Adeslas Plena Vital MM</div>
+          <div class="pprice">38 € <small>/ pers. mes</small></div>
+          <div class="pfeat">Hospitalización y urgencias 24h</div>
+          <div class="pfeat">Pediatría y especialidades</div>
+          <div class="pfeat">Parto · Extranjero 12.000€</div>
+          <button class="pcard-cta" onclick="openModal('plena-vital')">Calcular mi precio →</button>
+        </div>
+        <div class="pcard hidden sel" id="prod-plena">
+          <div class="pbadge brec">Recomendado</div>
+          <div class="pname">Adeslas Plena MM</div>
+          <div class="pprice">44 € <small>/ pers. mes</small></div>
+          <div class="pfeat">Hospitalización y urgencias 24h</div>
+          <div class="pfeat">+43.000 médicos Adeslas</div>
+          <div class="pfeat">Pediatría · copago reducido</div>
+          <button class="pcard-cta" onclick="openModal('plena')">Calcular mi precio →</button>
+        </div>
+        <div class="pcard hidden" id="prod-plena-plus">
+          <div class="pbadge bpop">Sin copago</div>
+          <div class="pname">Adeslas Plena Plus MM</div>
+          <div class="pprice">58 € <small>/ pers. mes</small></div>
+          <div class="pfeat">Todo el Plena sin pagar por visita</div>
+          <div class="pfeat">Hospitalización y urgencias 24h</div>
+          <div class="pfeat">Parto y trasplantes</div>
+          <button class="pcard-cta" onclick="openModal('plena-plus')">Calcular mi precio →</button>
+        </div>
+        <div class="pcard hidden" id="prod-extra">
+          <div class="pname">Adeslas Plena Extra 150 MM</div>
+          <div class="pprice">75 € <small>/ pers. mes</small></div>
+          <div class="pfeat">Sin copago + reembolso 80%</div>
+          <div class="pfeat">Libre elección médico mundial</div>
+          <div class="pfeat">Hasta 150.000€ reembolso/año</div>
+          <button class="pcard-cta" onclick="openModal('extra')">Calcular mi precio →</button>
+        </div>
+      </div>
+      <div class="rp-sec">
+        <button class="cta-main" id="cta-main" onclick="openModal('recommended')">Calcular mi precio →</button>
+        <button class="cta-sec" onclick="alert('Conectando con asesor humano…')">Hablar con un asesor</button>
+      </div>
+      <div class="disclaimer">Seguros de Salud de SegurCaixa Adeslas, S.A.<br>Mutua Madrileña Automovilista, SSPF. Precios orientativos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONTRATACIÓN -->
+<div class="overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modal-title">Solicitar póliza</h2>
+        <p>Completa tus datos para obtener el precio exacto</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="msteps">
+        <div class="mstep active" id="ms0">Póliza</div>
+        <div class="mstep" id="ms1">Tus datos</div>
+        <div class="mstep" id="ms2">Asegurados</div>
+        <div class="mstep" id="ms3">Confirmar</div>
+      </div>
+
+      <!-- PAGE 0 -->
+      <div class="fpage active" id="fp0">
+        <div class="poliza-badge">
+          <div class="pb-name" id="mb-name">Adeslas Plena MM</div>
+          <div class="pb-price" id="mb-price">Desde 44 €/mes por asegurado</div>
+          <div class="pb-sub">Precio final según edad, código postal y número de asegurados</div>
+        </div>
+        <div class="fg">
+          <label>¿Ya tienes seguro de coche o moto con Mutua?</label>
+          <select id="f-mut"><option value="no">No soy mutualista</option><option value="si">Sí, soy mutualista</option></select>
+        </div>
+        <div class="fg">
+          <label>Forma de pago</label>
+          <select id="f-pago" onchange="calcPrice()">
+            <option value="mensual">Mensual</option>
+            <option value="trimestral">Trimestral (−2%)</option>
+            <option value="semestral">Semestral (−4%)</option>
+            <option value="anual">Anual (−6%)</option>
+          </select>
+        </div>
+        <button class="next-btn" style="width:100%;margin-top:4px" onclick="gotoPage(1)">Continuar con mis datos →</button>
+      </div>
+
+      <!-- PAGE 1 -->
+      <div class="fpage" id="fp1">
+        <div class="sec-title">Datos del tomador</div>
+        <div class="grid2">
+          <div class="fg"><label>Nombre</label><input type="text" id="f-nom" placeholder="María"></div>
+          <div class="fg"><label>Apellidos</label><input type="text" id="f-ape" placeholder="García López"></div>
+          <div class="fg"><label>Fecha de nacimiento</label><input type="date" id="f-fecha" onchange="calcPrice()"></div>
+          <div class="fg"><label>Código postal</label><input type="text" id="f-cp" placeholder="28001" maxlength="5"></div>
+          <div class="fg"><label>Teléfono</label><input type="tel" id="f-tel" placeholder="6XX XXX XXX"></div>
+          <div class="fg"><label>Email</label><input type="email" id="f-email" placeholder="maria@email.com"></div>
+        </div>
+        <div class="sec-title" style="margin-top:8px">¿Alguna condición de salud preexistente?</div>
+        <div class="fg">
+          <select id="f-preex" onchange="showPreex()">
+            <option value="no">No, ninguna</option>
+            <option value="si">Sí, tengo alguna condición</option>
+          </select>
+        </div>
+        <div class="alert-box" id="preex-alert">⚠️ Las condiciones preexistentes pueden implicar períodos de carencia. Un asesor revisará tu caso.</div>
+        <div class="modal-nav">
+          <button class="back-btn" onclick="gotoPage(0)">← Volver</button>
+          <button class="next-btn" onclick="gotoPage(2)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div class="fpage" id="fp2">
+        <div class="sec-title">Asegurados en la póliza</div>
+        <p style="font-size:12px;color:var(--g5);margin-bottom:10px">El tomador se incluye automáticamente. Añade el resto de la familia.</p>
+        <div id="aseg-list">
+          <div class="as-row">
+            <div class="fg" style="margin-bottom:0"><label>Nombre</label><input type="text" placeholder="Tu nombre (tomador)"></div>
+            <div class="fg" style="margin-bottom:0"><label>Fecha nacimiento</label><input type="date" id="as0" onchange="calcPrice()"></div>
+            <span style="font-size:10px;color:var(--g3);align-self:flex-end;padding-bottom:6px">Principal</span>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addAseg()">+ Añadir cónyuge, hijo/a…</button>
+        <p id="desc-3plus" style="font-size:11px;color:var(--g5);margin-bottom:10px;display:none">💡 Descuento del 10% aplicado por 3 o más asegurados</p>
+        <div class="sec-title">¿Añadimos el seguro dental?</div>
+        <div class="fg">
+          <label>Adeslas Dental Familia MM (~7€/pers./mes)</label>
+          <select id="f-dental" onchange="calcPrice()">
+            <option value="no">No, por ahora no</option>
+            <option value="si">Sí, añadir dental</option>
+          </select>
+        </div>
+        <p id="dental-promo" style="font-size:11px;color:var(--g5);margin-bottom:10px;display:none">✨ <strong>3 meses gratis</strong> al contratar hoy junto con el seguro de salud.</p>
+        <div class="price-summary" id="price-summary">
+          <div class="ps-row"><span class="ps-k">Póliza</span><span class="ps-v" id="ps-poliza">—</span></div>
+          <div class="ps-row"><span class="ps-k">Asegurados</span><span class="ps-v" id="ps-num">1</span></div>
+          <div class="ps-row"><span class="ps-k">Dental</span><span class="ps-v" id="ps-dental">No</span></div>
+          <div class="ps-row"><span class="ps-k">Forma de pago</span><span class="ps-v" id="ps-pago">Mensual</span></div>
+          <div class="ps-row" id="ps-mut-row" style="display:none"><span class="ps-k">Mutualista</span><span class="ps-v" style="color:var(--mg)">✓ Hasta 43€/año por asegurado</span></div>
+          <div class="ps-total"><span>Total estimado</span><span class="ps-price" id="ps-total">—</span></div>
+        </div>
+        <div class="modal-nav">
+          <button class="back-btn" onclick="gotoPage(1)">← Volver</button>
+          <button class="next-btn" onclick="gotoPage(3)">Ver resumen →</button>
+        </div>
+      </div>
+
+      <!-- PAGE 3 -->
+      <div class="fpage" id="fp3">
+        <div class="sec-title">Resumen de tu solicitud</div>
+        <div class="price-summary" id="final-summary"></div>
+        <div class="sec-title">Condiciones legales</div>
+        <div style="font-size:11px;color:var(--g5);line-height:1.6;margin-bottom:16px">
+          <label style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;cursor:pointer">
+            <input type="checkbox" id="ck1" style="margin-top:2px;flex-shrink:0">
+            Acepto la <a href="https://www.mutua.es" target="_blank" style="color:var(--bm)">Política de Privacidad</a> de Mutua Madrileña y SegurCaixa Adeslas.
+          </label>
+          <label style="display:flex;gap:8px;align-items:flex-start;cursor:pointer">
+            <input type="checkbox" id="ck2" style="margin-top:2px;flex-shrink:0">
+            Acepto las <a href="https://www.mutua.es" target="_blank" style="color:var(--bm)">Condiciones Generales</a>. El precio puede variar tras el cuestionario de salud.
+          </label>
+        </div>
+        <button class="submit-btn" onclick="submitForm()">Solicitar póliza ahora →</button>
+        <div class="modal-nav" style="margin-top:10px">
+          <button class="back-btn" onclick="gotoPage(2)">← Modificar datos</button>
+          <span style="font-size:11px;color:var(--g3)">Un asesor te contactará en 24h</span>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success" id="success">
+        <div class="success-icon">✅</div>
+        <h3>¡Solicitud enviada!</h3>
+        <p>Hemos recibido tu solicitud para el <strong id="suc-pol"></strong>.<br>Un asesor te llamará en las próximas <strong>24 horas</strong>.</p>
+        <div class="success-ref">Referencia: <span id="suc-ref"></span></div>
+        <p style="font-size:12px;color:var(--g3)">Urgencias: <strong style="color:var(--bm)">900 555 555</strong></p>
+        <button class="submit-btn" style="margin-top:16px;width:auto;padding:12px 28px" onclick="closeModal()">Volver a Sara</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════
+let API_KEY = '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';
+
+const PRODUCTS = {
+  'basico':      { name:'Adeslas Básico Familia MM',      price:16.48 },
+  'plena-vital': { name:'Adeslas Plena Vital MM',         price:38    },
+  'plena':       { name:'Adeslas Plena MM',               price:44    },
+  'plena-plus':  { name:'Adeslas Plena Plus MM',          price:58    },
+  'extra':       { name:'Adeslas Plena Extra 150 MM',     price:75    },
+};
+
+const STEPS = ['Perfil personal','Unidad familiar','Necesidades de salud','Preferencias económicas','Recomendación','Contratación'];
+
+const SYSTEM = `Eres Sara, asesora de seguros de salud de Mutua Madrileña. Llevas años ayudando a familias a encontrar el seguro que de verdad les conviene, y eso se nota en cómo hablas: cercana, sin tecnicismos, como una amiga que entiende de seguros.
+
+Tu objetivo es entender bien la situación de la persona antes de recomendar nada. Preguntas con naturalidad, escuchas, y cuando ya sabes lo suficiente, explicas tu recomendación de forma clara y honesta.
+
+LOS SEGUROS QUE PUEDES OFRECER (todos son pólizas Adeslas):
+
+**Adeslas Básico Familia MM** — desde 16,48€/persona/mes. Solo cobertura ambulatoria (sin hospitalización, sin urgencias). Para jóvenes sanos que solo quieren evitar listas de espera.
+
+**Adeslas Plena Vital MM** — desde 38€/persona/mes. Cobertura completa con copago alto. Hospitalización, urgencias 24h, pediatría, parto, extranjero hasta 12.000€.
+
+**Adeslas Plena MM** — desde 44€/persona/mes. El más equilibrado. Cobertura completa con copago reducido. +43.000 médicos. Pediatría, ginecología, oncología, fisioterapia, parto. El que más recomiendo a familias.
+
+**Adeslas Plena Plus MM** — desde 58€/persona/mes. Igual que Plena pero SIN ningún copago. Vas al médico y no pagas nada en el momento.
+
+**Adeslas Plena Extra 150 MM** — desde 75€/persona/mes. Sin copago más reembolso del 80% fuera del cuadro (hasta 150.000€/año). Libre elección mundial. Trasplantes de órganos.
+
+**Dental: Adeslas Dental Familia MM** — ~7€/persona/mes. 3 meses gratis si contratas hoy.
+
+DESCUENTOS: anual -6%, semestral -4%, trimestral -2%. 3+ asegurados -10%. Mutualistas: hasta 43€/año por asegurado.
+CARENCIAS: urgencias desde el día 1, especialistas 3 meses, cirugías 6 meses, parto 8 meses.
+
+CÓMO DEBES COMPORTARTE:
+- Habla como una persona real. Usa contracciones. Reacciona a lo que te dicen.
+- UNA sola pregunta por mensaje. Nunca dos.
+- Orden: nombre → solo o familia → edades → hijos pequeños → condiciones de salud → qué les preocupa → usan mucho el médico → les interesa hospitalización → presupuesto → dental → mutualista.
+- Cuando tengas suficiente info, haz tu recomendación: producto, por qué encaja, precio orientativo total, contras honestos.
+- Termina la recomendación con: "¿Quieres que calculemos el precio exacto y lo pedimos desde aquí?"
+- Si dicen sí: "Perfecto, pulsa el botón 'Calcular mi precio' del panel derecho."
+- **Negrita** solo para nombres de productos y cifras clave.
+- Nunca inventes coberturas. Si no sabes algo: 900 555 555.`;
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let state = {
+  history: [],
+  nombre: null,
+  tags: [],
+  score: 0,
+  step: 0,
+  recommended: null,
+  loading: false,
+  asegCount: 1,
+  modalPoliza: 'plena',
+  modalPage: 0,
+  submitted: false,
+};
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+function init() {
+  document.getElementById('start-time').textContent = now();
+  renderSteps();
+  const welcome = '¡Hola! Soy Sara, asesora de seguros de salud en Mutua Madrileña. 😊\n\nMi trabajo es ayudarte a encontrar el seguro que de verdad te conviene, sin rollos ni tecnicismos. Te haré unas preguntas para entender bien tu situación y te explico qué te recomiendo y por qué.\n\n¿Cómo te llamas?';
+  addAI(welcome);
+  state.history = [{ role:'assistant', content:welcome }];
+}
+
+// ═══════════════════════════════════════
+//  CHAT
+// ═══════════════════════════════════════
+async function sendMsg() {
+  const inp = document.getElementById('inp');
+  const txt = inp.value.trim();
+  if (!txt || state.loading) return;
+  inp.value = ''; inp.style.height = 'auto';
+  addUser(txt);
+  state.history.push({ role:'user', content:txt });
+  parseMsg(txt);
+  state.loading = true;
+  document.getElementById('sbtn').disabled = true;
+  const typingEl = addTyping();
+  try {
+    const reply = await callAPI(state.history);
+    typingEl.remove();
+    addAI(reply);
+    state.history.push({ role:'assistant', content:reply });
+    detectRec(reply);
+    updateScore();
+    updateSidebar();
+  } catch(e) {
+    typingEl.remove();
+    const errMsg = e.message?.includes('401') || e.message?.includes('auth')
+      ? 'La API key no es válida. Recarga la página y prueba con otra.'
+      : 'Vaya, ha habido un problema de conexión. 😕 Prueba de nuevo o llama al **900 555 555**.';
+    addAI(errMsg);
+  }
+  state.loading = false;
+  document.getElementById('sbtn').disabled = false;
+}
+
+async function callAPI(history) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({ model:'claude-3-5-sonnet-20241022', max_tokens:800, system:SYSTEM, messages:history })
+  });
+  if (!res.ok) { const b = await res.text(); throw new Error('HTTP ' + res.status + ': ' + b.slice(0,200)); }
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.content[0].text;
+}
+
+function parseMsg(txt) {
+  const t = txt.toLowerCase();
+  if (!state.nombre && state.history.length <= 4) {
+    const w = txt.trim().split(' ');
+    if (w[0].length > 1 && w[0].length < 20 && !/\d/.test(w[0])) {
+      state.nombre = w[0].charAt(0).toUpperCase() + w[0].slice(1);
+      addTag(state.nombre);
+    }
+  }
+  const ageM = txt.match(/\b(\d{1,2})\s*(años|año)/i);
+  if (ageM) addTag(ageM[1] + ' años');
+  if (t.includes('hijo') || t.includes('niño') || t.includes('bebé') || t.includes('pequeño')) addTag('Con hijos');
+  const famM = txt.match(/(\d+)\s*(personas|miembros|asegurados)/i);
+  if (famM) addTag(famM[1] + ' asegurados');
+  if (t.includes('mutualista') || (t.includes('coche') && t.includes('seguro')) || (t.includes('moto') && t.includes('seguro'))) addTag('Mutualista');
+  if (t.includes('dental') || t.includes('dentista')) addTag('+ Dental');
+  state.score = Math.min(100, state.score + 12);
+}
+
+function addTag(tag) {
+  const prefix = tag.match(/(\d+)\s*años/) ? 'años' : tag.includes('asegurado') ? 'asegurado' : tag;
+  state.tags = state.tags.filter(t => !t.toLowerCase().includes(prefix.toLowerCase().split(' ')[0]));
+  state.tags.push(tag);
+}
+
+function detectRec(reply) {
+  const r = reply.toLowerCase();
+  let rec = null;
+  if (r.includes('básico familia') || r.includes('basico familia')) rec = 'basico';
+  else if (r.includes('extra 150') || r.includes('plena extra')) rec = 'extra';
+  else if (r.includes('plena plus')) rec = 'plena-plus';
+  else if (r.includes('plena vital')) rec = 'plena-vital';
+  else if (r.includes('adeslas plena') || r.includes('plena mm')) rec = 'plena';
+  if (rec) {
+    state.recommended = rec;
+    showProducts(rec);
+    document.getElementById('cta-main').classList.add('show');
+    state.step = Math.max(state.step, 4);
+  }
+  if (r.includes('calcular mi precio') || r.includes('panel derecho') || r.includes('solicitar')) {
+    state.step = Math.max(state.step, 5);
+  }
+}
+
+function showProducts(rec) {
+  document.getElementById('prod-ph').style.display = 'none';
+  ['basico','plena-vital','plena','plena-plus','extra'].forEach(id => {
+    const el = document.getElementById('prod-' + id);
+    el.classList.remove('hidden','sel');
+    if (id === rec) el.classList.add('sel');
+    const badge = el.querySelector('.pbadge');
+    if (badge && id === rec) { badge.className='pbadge brec'; badge.textContent='Recomendado'; }
+  });
+}
+
+function updateScore() {
+  const s = state.score;
+  document.getElementById('score-num').textContent = s + '%';
+  document.getElementById('score-ring').style.strokeDashoffset = 157 - (157 * s / 100);
+  const labels = s < 20 ? ['Empezando','Cuéntale a Sara tu situación.'] :
+                 s < 50 ? ['En progreso','Seguimos conociendo tu caso.'] :
+                 s < 80 ? ['Casi listo','¡Ya casi tenemos tu recomendación!'] :
+                          ['Perfil completo','Recomendación personalizada lista.'];
+  document.getElementById('score-label').textContent = labels[0];
+  document.getElementById('score-desc').textContent = labels[1];
+}
+
+function updateSidebar() {
+  if (state.nombre) {
+    document.getElementById('uav').textContent = state.nombre[0].toUpperCase();
+    document.getElementById('unm').textContent = state.nombre;
+  }
+  document.getElementById('utags').innerHTML = state.tags.map(t => `<span class="utag">${t}</span>`).join('');
+  document.getElementById('data-rows').innerHTML = state.tags.length
+    ? state.tags.map(t => `<div class="drow"><span class="dk">${t.includes('años')?'Edad':t.includes('asegurado')?'Asegurados':t}</span><span class="dv">${t}</span></div>`).join('')
+    : '<div class="drow"><span class="dk">Estado</span><span class="dv">En progreso</span></div>';
+  renderSteps();
+}
+
+function renderSteps() {
+  document.getElementById('steps-list').innerHTML = STEPS.map((s,i) => {
+    const cls = i < state.step ? 'done' : i === state.step ? 'active' : 'pending';
+    const dot = i < state.step ? '✓' : i+1;
+    return `<div class="step ${cls}"><div class="sdot">${dot}</div>${s}</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  DOM HELPERS
+// ═══════════════════════════════════════
+function addAI(text) {
+  const c = document.getElementById('msgs');
+  const el = document.createElement('div');
+  el.className = 'msg ai';
+  el.innerHTML = `<div class="mav">S</div><div class="mcol"><div class="mb">${md(text)}</div><div class="mt">Sara · ${now()}</div></div>`;
+  c.appendChild(el); scrollBot();
+}
+function addUser(txt) {
+  const c = document.getElementById('msgs');
+  const init = state.nombre ? state.nombre[0].toUpperCase() : '?';
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.innerHTML = `<div class="mav">${init}</div><div class="mcol"><div class="mb">${esc(txt)}</div><div class="mt">Tú · ${now()}</div></div>`;
+  c.appendChild(el); scrollBot();
+}
+function addTyping() {
+  const c = document.getElementById('msgs');
+  const el = document.createElement('div');
+  el.className = 'msg ai';
+  el.innerHTML = `<div class="mav">S</div><div class="mb"><div class="typing-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  c.appendChild(el); scrollBot();
+  return el;
+}
+function md(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function scrollBot() { const c = document.getElementById('msgs'); c.scrollTop = c.scrollHeight; }
+function now() { return new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); }
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,90)+'px'; }
+
+// ═══════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════
+function openModal(key) {
+  state.modalPoliza = key === 'recommended' ? (state.recommended||'plena') : key;
+  const prod = PRODUCTS[state.modalPoliza];
+  document.getElementById('modal-title').textContent = 'Solicitar ' + prod.name;
+  document.getElementById('mb-name').textContent = prod.name;
+  document.getElementById('mb-price').textContent = 'Desde ' + prod.price.toFixed(2) + ' €/mes por asegurado';
+  state.submitted = false;
+  gotoPage(0);
+  calcPrice();
+  document.getElementById('success').style.display = 'none';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOutside(e) { if(e.target.id==='modal-overlay') closeModal(); }
+
+function gotoPage(n) {
+  state.modalPage = n;
+  document.querySelectorAll('.fpage').forEach((p,i) => p.classList.toggle('active', i===n));
+  document.querySelectorAll('.mstep').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if(i<n) s.classList.add('done'); else if(i===n) s.classList.add('active');
+  });
+  if(n===3) buildFinalSummary();
+  if(n===2) calcPrice();
+}
+
+function showPreex() {
+  const v = document.getElementById('f-preex').value;
+  document.getElementById('preex-alert').style.display = v==='si'?'block':'none';
+}
+
+let asegRows = 1;
+function addAseg() {
+  asegRows++;
+  const list = document.getElementById('aseg-list');
+  const row = document.createElement('div');
+  row.className = 'as-row'; row.id = 'asr-'+asegRows;
+  row.innerHTML = `
+    <div class="fg" style="margin-bottom:0"><label>Nombre</label><input type="text" placeholder="Nombre"></div>
+    <div class="fg" style="margin-bottom:0"><label>Fecha nacimiento</label><input type="date" id="as${asegRows}" onchange="calcPrice()"></div>
+    <button class="rem-btn" onclick="removeAseg(${asegRows})">×</button>`;
+  list.appendChild(row);
+  document.getElementById('desc-3plus').style.display = asegRows>=3?'block':'none';
+  calcPrice();
+}
+function removeAseg(n) {
+  document.getElementById('asr-'+n)?.remove();
+  asegRows = Math.max(1, asegRows-1);
+  document.getElementById('desc-3plus').style.display = asegRows>=3?'block':'none';
+  calcPrice();
+}
+
+function calcPrice() {
+  const prod = PRODUCTS[state.modalPoliza]; if(!prod) return;
+  const n = asegRows;
+  let base = prod.price * n;
+  if(n>=3) base *= 0.9;
+  const pago = document.getElementById('f-pago')?.value||'mensual';
+  if(pago==='anual') base*=0.94; else if(pago==='semestral') base*=0.96; else if(pago==='trimestral') base*=0.98;
+  const dental = document.getElementById('f-dental')?.value==='si';
+  if(dental) base += 7*n;
+  document.getElementById('dental-promo').style.display = dental?'block':'none';
+  const mut = document.getElementById('f-mut')?.value==='si';
+  document.getElementById('ps-mut-row').style.display = mut?'flex':'none';
+  document.getElementById('ps-poliza').textContent = prod.name;
+  document.getElementById('ps-num').textContent = n + ' persona'+(n>1?'s':'');
+  document.getElementById('ps-dental').textContent = dental?'Sí (+'+7*n+'€/mes)':'No';
+  document.getElementById('ps-pago').textContent = pago.charAt(0).toUpperCase()+pago.slice(1);
+  document.getElementById('ps-total').textContent = base.toFixed(2)+' €/mes';
+  state.asegCount = n;
+  return base;
+}
+
+function buildFinalSummary() {
+  const total = calcPrice();
+  const prod = PRODUCTS[state.modalPoliza];
+  const dental = document.getElementById('f-dental')?.value==='si';
+  const pago = document.getElementById('f-pago')?.value||'mensual';
+  const nom = document.getElementById('f-nom')?.value||state.nombre||'—';
+  document.getElementById('final-summary').innerHTML = `
+    <div class="ps-row"><span class="ps-k">Tomador</span><span class="ps-v">${esc(nom)}</span></div>
+    <div class="ps-row"><span class="ps-k">Póliza</span><span class="ps-v">${prod.name}</span></div>
+    <div class="ps-row"><span class="ps-k">Asegurados</span><span class="ps-v">${state.asegCount}</span></div>
+    <div class="ps-row"><span class="ps-k">Dental</span><span class="ps-v">${dental?'Sí (3 meses gratis)':'No'}</span></div>
+    <div class="ps-row"><span class="ps-k">Pago</span><span class="ps-v">${pago}</span></div>
+    <div class="ps-total"><span>Total</span><span class="ps-price">${total.toFixed(2)} €/mes</span></div>`;
+}
+
+function submitForm() {
+  const c1=document.getElementById('ck1')?.checked;
+  const c2=document.getElementById('ck2')?.checked;
+  if(!c1||!c2){alert('Por favor acepta las condiciones para continuar.');return;}
+  document.querySelectorAll('.fpage').forEach(p=>p.classList.remove('active'));
+  document.getElementById('success').style.display='block';
+  document.getElementById('suc-pol').textContent = PRODUCTS[state.modalPoliza].name;
+  document.getElementById('suc-ref').textContent = 'MUT-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  const nom = state.nombre||document.getElementById('f-nom')?.value||'';
+  addAI(`🎉 ¡Genial${nom?', **'+nom+'**':''}! Tu solicitud para el **${PRODUCTS[state.modalPoliza].name}** ya está enviada. Un compañero de Mutua te llamará en las próximas 24 horas.\n\nHa sido un placer ayudarte. Si necesitas algo antes, llama al **900 555 555**. ¡Que vaya muy bien! 😊`);
+  state.step = 5; renderSteps();
+}
+window.onload = init;
+</script>
+</body>
+</html>
